@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Yeeeyyy</title>
+</head>
+<body ng-app="app" ng-controller="appCntr as app">
+	<h1 ng-bind="app.test"></h1>
+	<h5 ng-bind="app.resultFromCommonService"></h5>
+
+	<div ng-controller="componentsCntr as components">
+		<h2 ng-bind="components.component"></h2>
+	</div>
+	<div ng-controller="commonCntr as common">
+		<h2 ng-bind="common.con"></h2>
+	</div>
+	<div ui-view></div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.1/angular-ui-router.js"></script>
+	<script type="text/javascript">
+
+		const AppComponent = {
+		  template: `
+		    <header>
+		        Hello world
+		    </header>
+		    <div>
+		        <div ui-view></div>
+		    </div>
+		    <footer>
+		        Copyright MyApp 2016.
+		    </footer>
+		  `
+		};
+
+		angular
+		  .module('app.common', [])
+		  .constant('common.serviceTest', {
+		  	NAME: '1.5 App' 
+		  })
+		  .factory('common.service', uselessService)
+		  .controller('commonCntr', commonCntr);
+
+		 function uselessService()
+		 {
+		 	return {
+		 		name: 'common service'
+		 	};
+		 }
+	  	function commonCntr()
+	  	{
+	  		this.con = "common"; 
+	  	}
+
+
+		angular
+		  .module('app.components', [])
+		  .controller('componentsCntr', componentsCntr);
+
+	  	function componentsCntr()
+	  	{
+	  		console.log('this', this);
+	  		this.component = "component"; 
+	  	}
+
+	    angular
+		  .module('app', [
+		    'app.common',
+		    'app.components',
+		    'ui.router'
+		  ])
+		  .component('app', AppComponent)
+  		  .name;
+
+	  	angular
+		  .module('app')
+		  .controller('appCntr', appCntr);
+
+		 appCntr.$inject = ['common.service', 'common.serviceTest'];
+
+	  	function appCntr(service, serviceTest)
+	  	{
+	  		this.test = "Testing app 1.5";
+	  		this.resultFromCommonService = service.name;
+	  		console.log('serviceTest.name', serviceTest.NAME);
+	  	}
+
+	</script>
+</body>
+</html>
